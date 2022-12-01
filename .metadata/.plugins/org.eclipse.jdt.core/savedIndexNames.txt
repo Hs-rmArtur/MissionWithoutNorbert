@@ -1,0 +1,1 @@
+INDEX VERSION 1.131+C:\Medieninformatik\Prog1-Stegreifprojekte\MissionWithoutNorbert\.metadata\.plugins\org.eclipse.jdt.core
