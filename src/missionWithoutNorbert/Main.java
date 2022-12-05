@@ -130,7 +130,7 @@ public class Main {
 				if (determineLose(minionsLeftOfNorbert, minionsRightOfNorbert)) {
 					emptyMinionQueue = true;
 					minionQueue = createEmptyMinionQueue(MAX_MINION_QUEUE);
-					System.out.println(minionQueue);
+					System.out.println("Alle Minions wurden gewählt: " + minionQueue);
 					System.out.println("- - - - - - - - - - - - - - -");
 					System.out.println("Gewonnen! Der PC hat Norbert! Sie haben " + teamPlayer
 							+ " Minions im Team. Retten Sie mit Ihnen die Welt!");
@@ -171,7 +171,7 @@ public class Main {
 				if (determineLose(minionsLeftOfNorbert, minionsRightOfNorbert)) {
 					emptyMinionQueue = true;
 					minionQueue = createEmptyMinionQueue(MAX_MINION_QUEUE);
-					System.out.println("Aktuelle Minionreihe: " + minionQueue);
+					System.out.println("Alle Minions wurden gewählt: " + minionQueue);
 					System.out.println("- - - - - - - - - - - - - - -");
 					System.out.println("Sie haben Norbert und " + teamPlayer
 							+ " Minions im Team. Versuchen Sie mit Ihm die Welt zu retten!");
