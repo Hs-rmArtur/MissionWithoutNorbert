@@ -3,16 +3,17 @@ package missionWithoutNorbert;
 import de.hsrm.mi.prog.util.StaticScanner;
 
 /*
-Erstes Stegreifprojekt "MissionWithoutNorbert"
+
+Erstes Stegreifprojekt: "Mission Without Norbert"
 Implementiert von Mykhailo Fakliier, Fouad Ahsayni und Artur Konkel	
-	
+
 */
 
 public class Main {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
+		// Creating variables and constants
 		final int MAX_MINION_QUEUE = 11;
 		final int MAX_SELECTED_MINIONS_ALLOWED = 3;
 
@@ -35,34 +36,38 @@ public class Main {
 
 		int teamPC = 0;
 		int teamPlayer = 0;
-		// Choose who will start
+		
+		// Choosing who will start
 		playersTurn = coinFlip();
 
-		// Determine Norberts position in Queue
+		// Determining Norbert's position in the queue
 		norbertsPosition = determineNorbertsPosition(MAX_MINION_QUEUE);
 
-		// Build MinionQueue
+		// Building the queue of minions
 		minionQueue = buildMinionQueue(norbertsPosition, MAX_MINION_QUEUE);
 
 		minionsLeftOfNorbert = determineMinionsLeftOfNorbert(norbertsPosition);
 		minionsRightOfNorbert = determineMinionsRightOfNorbert(norbertsPosition, MAX_MINION_QUEUE);
 
-		// Start Playing
+		// Starting the game
+		// The turns will be repeated until the queue of minions is empty
 		while (!emptyMinionQueue) {
 			turnPossible = false;
 
 			if (playersTurn) {
-				// Players turn
+				// Player's turn
 				System.out.println("Aktuelle Minionreihe: " + minionQueue);
 				System.out.println(
 						"Sie sind an der Reihe. Auf welcher Seite möchten Sie ihre Minions wählen? Geben Sie rechts(r) oder links(l) ein.");
 
 				while (!turnPossible) {
+					
+					// Checking is input is correct
 					inputCorrect = false;
 
 					while (!inputCorrect) {
 						playerInputSide = StaticScanner.nextChar();
-
+						
 						if (playerInputSide != 'r' && playerInputSide != 'l') {
 							System.out.println("Falsche Richtung. Versuchen Sie es bitte erneut.");
 						} else {
@@ -78,21 +83,23 @@ public class Main {
 
 					System.out.println("Wieviele Minions möchten Sie wählen? Wählen Sie zwischen 1 und 3 Minions.");
 
-					// Check if input is correct
+					// Checking if input is correct
 					inputCorrect = false;
 					while (!inputCorrect) {
 						playerInputNumMinions = StaticScanner.nextInt();
 
 						if (playerInputNumMinions < 1 || playerInputNumMinions > 3) {
-							System.out.println("Es sind nur Zahlen zwischen 1 und 3 erlaubt. Bitte versuchen Sie es erneut");
+							System.out.println("Es sind nur Zahlen zwischen 1 und 3 erlaubt. Bitte versuchen Sie es erneut.");
 						} else {
 							numOfChosenMinions = playerInputNumMinions;
 							inputCorrect = true;
 						}
 					}
+					
 					turnPossible = checkIfTurnPossible(minionsLeftOfNorbert, minionsRightOfNorbert, numOfChosenMinions,
 							selectedLeftSide);
-
+					
+					// Asking player to repeat input if intended turn is not possible
 					if (!turnPossible) {
 						System.out
 								.println("Ihre Auswahlskombination ist leider nicht möglich. Bitte wählen Sie erneut.");
@@ -111,6 +118,7 @@ public class Main {
 
 				teamPlayer = addSelectedMinionsToTeam(teamPlayer, numOfChosenMinions);
 
+				// Adjusting the queue of minions based on the minions that were chosen
 				minionQueue = adjustMinionQueue(numChosenLeft, numChosenRight, minionsLeftOfNorbert,
 						minionsRightOfNorbert);
 
@@ -125,8 +133,10 @@ public class Main {
 
 				System.out.println("Aktuelle Minionreihe: " + minionQueue);
 
+				// Finishing turn
 				playersTurn = !playersTurn;
 
+				// Determining if PC lost and player won
 				if (determineLose(minionsLeftOfNorbert, minionsRightOfNorbert)) {
 					emptyMinionQueue = true;
 					minionQueue = createEmptyMinionQueue(MAX_MINION_QUEUE);
@@ -136,17 +146,16 @@ public class Main {
 							+ " Minions im Team. Retten Sie mit Ihnen die Welt!");
 				}
 			} else {
-				// PC turn
+				// PC's turn
 				turnPossible = false;
 				while (!turnPossible) {
 					numOfChosenMinions = getRandomNumber(1, MAX_SELECTED_MINIONS_ALLOWED);
 					selectedLeftSide = coinFlip();
-					// Check if it's possible to select the chosen number of Minions on the chosen
-					// side
+					// Checking if it's possible to select the chosen number of minions on the chosen side
 					turnPossible = checkIfTurnPossible(minionsLeftOfNorbert, minionsRightOfNorbert, numOfChosenMinions,
 							selectedLeftSide);
 				}
-
+				
 				if (selectedLeftSide) {
 					minionsLeftOfNorbert -= numOfChosenMinions;
 					numChosenLeft += numOfChosenMinions;
@@ -154,8 +163,10 @@ public class Main {
 					minionsRightOfNorbert -= numOfChosenMinions;
 					numChosenRight += numOfChosenMinions;
 				}
+				
 				teamPC = addSelectedMinionsToTeam(teamPC, numOfChosenMinions);
 
+				// Adjusting the queue of minions based on the minions that were chosen
 				minionQueue = adjustMinionQueue(numChosenLeft, numChosenRight, minionsLeftOfNorbert,
 						minionsRightOfNorbert);
 
@@ -164,10 +175,11 @@ public class Main {
 				} else {
 					System.out.println("PC hat " + numOfChosenMinions + " Minion(s) rechts ausgewählt. ");
 				}
-
-				// Finished with Turn
+				
+				// Finishing turn
 				playersTurn = !playersTurn;
 
+				// Determining if player lost and PC won
 				if (determineLose(minionsLeftOfNorbert, minionsRightOfNorbert)) {
 					emptyMinionQueue = true;
 					minionQueue = createEmptyMinionQueue(MAX_MINION_QUEUE);
@@ -184,6 +196,7 @@ public class Main {
 
 	}
 
+	// Method to create the empty queue (as soon as all minions have been chosen)
 	public static String createEmptyMinionQueue(int maxQueue) {
 		String queue = "";
 		for (int i = 0; i < maxQueue; i++) {
@@ -192,6 +205,7 @@ public class Main {
 		return queue;
 	}
 
+	// Method to determine if player or PC lost (used in every turn)
 	public static boolean determineLose(int minionsLeftOfNorbert, int minionsRightOfNorbert) {
 		if (minionsLeftOfNorbert + minionsRightOfNorbert == 0) {
 			return true;
@@ -199,6 +213,7 @@ public class Main {
 		return false;
 	}
 
+	// Method to adjust the queue of minions (used in every turn)
 	public static String adjustMinionQueue(int numChosenLeft, int numChosenRight, int minionsLeftOfNorbert,
 			int minionsRightOfNorbert) {
 		String minionQueue = "";
@@ -211,7 +226,7 @@ public class Main {
 			minionQueue += "X";
 		}
 
-		// Add Norbert to Queue
+		// Adding Norbert to the queue
 		minionQueue += "O";
 
 		for (int i = 0; i < minionsRightOfNorbert; i++) {
@@ -226,12 +241,14 @@ public class Main {
 
 	}
 
+	// Method to add the number of selected minions to player's or PC's team
 	public static int addSelectedMinionsToTeam(int team, int numOfChosenMinions) {
 		team += numOfChosenMinions;
 
 		return team;
 	}
 
+	// Method to determine number of minions left of Norbert
 	public static int determineMinionsLeftOfNorbert(int norbertsPosition) {
 		int runner = 1;
 		int minionsLeftOfNorbert = 0;
@@ -244,24 +261,26 @@ public class Main {
 		return minionsLeftOfNorbert;
 	}
 
+	// Method to determine number of minions left of Norbert
 	public static int determineMinionsRightOfNorbert(int norbertsPosition, int maxMinionQueue) {
 		int minionsLeftOfNorbert;
 		int minionsRightOfNorbert;
 		minionsLeftOfNorbert = determineMinionsLeftOfNorbert(norbertsPosition);
 
 		minionsRightOfNorbert = maxMinionQueue - minionsLeftOfNorbert - 1;
-		// Es muss -1 abgezogen werden, da Norbert nicht mit einbegriffen wird.
+		// We have to subtract -1, as Norbert is not included
 
 		return minionsRightOfNorbert;
 
 	}
 
+	// Method to determine if the intended selection is possible
 	public static boolean checkIfTurnPossible(int minionsLeftOfNorbert, int minionsRightOfNorbert,
 			int numOfChosenMinions, boolean selectedLeftSide) {
 		boolean turnPossible;
 
 		if (selectedLeftSide) {
-			// Check if selection on left side is possible
+			// Checking if selection on the left side is possible
 			if (minionsLeftOfNorbert < numOfChosenMinions) {
 				turnPossible = false;
 			} else {
@@ -269,7 +288,7 @@ public class Main {
 			}
 
 		} else {
-			// Check if selection on right side is possible
+			// Checking if selection on the right side is possible
 			if (minionsRightOfNorbert < numOfChosenMinions) {
 				turnPossible = false;
 			} else {
@@ -295,10 +314,12 @@ public class Main {
 		}
 	}
 
+	// Method to randomly determine Norbert's position in the queue 
 	public static int determineNorbertsPosition(int maxQueueLength) {
 		return getRandomNumber(1, maxQueueLength);
 	}
 
+	// Method to build the queue of minions for the first time
 	public static String buildMinionQueue(int norbertsPosition, int maxQueueLength) {
 		String queue = "";
 
