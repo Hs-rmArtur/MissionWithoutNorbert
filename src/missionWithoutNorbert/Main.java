@@ -36,7 +36,7 @@ public class Main {
 
 		int teamPC = 0;
 		int teamPlayer = 0;
-		
+
 		// Choosing who will start
 		playersTurn = coinFlip();
 
@@ -46,28 +46,37 @@ public class Main {
 		// Building the queue of minions
 		minionQueue = buildMinionQueue(norbertsPosition, MAX_MINION_QUEUE);
 
+		// Determine minions around Norbert
 		minionsLeftOfNorbert = determineMinionsLeftOfNorbert(norbertsPosition);
 		minionsRightOfNorbert = determineMinionsRightOfNorbert(norbertsPosition, MAX_MINION_QUEUE);
 
-		// Starting the game
+		// Starting the game by welcoming the player
+		welcomingPlayer();
+		
+		if(playersTurn) {
+			System.out.println("Sie beginnen das Spiel! Viel Erfolg!");
+		} else {
+			System.out.println("Ihr Gegner, der PC, beginnt!");
+		}
+		
 		// The turns will be repeated until the queue of minions is empty
 		while (!emptyMinionQueue) {
 			turnPossible = false;
 
 			if (playersTurn) {
-				// Player's turn
+				// Starting player's turn
 				System.out.println("Aktuelle Minionreihe: " + minionQueue);
 				System.out.println(
 						"Sie sind an der Reihe. Auf welcher Seite möchten Sie ihre Minions wählen? Geben Sie rechts(r) oder links(l) ein.");
 
 				while (!turnPossible) {
-					
+
 					// Checking is input is correct
 					inputCorrect = false;
 
 					while (!inputCorrect) {
 						playerInputSide = StaticScanner.nextChar();
-						
+
 						if (playerInputSide != 'r' && playerInputSide != 'l') {
 							System.out.println("Falsche Richtung. Versuchen Sie es bitte erneut.");
 						} else {
@@ -89,20 +98,21 @@ public class Main {
 						playerInputNumMinions = StaticScanner.nextInt();
 
 						if (playerInputNumMinions < 1 || playerInputNumMinions > 3) {
-							System.out.println("Es sind nur Zahlen zwischen 1 und 3 erlaubt. Bitte versuchen Sie es erneut.");
+							System.out.println(
+									"Es sind nur Zahlen zwischen 1 und 3 erlaubt. Bitte versuchen Sie es erneut.");
 						} else {
 							numOfChosenMinions = playerInputNumMinions;
 							inputCorrect = true;
 						}
 					}
-					
+
 					turnPossible = checkIfTurnPossible(minionsLeftOfNorbert, minionsRightOfNorbert, numOfChosenMinions,
 							selectedLeftSide);
-					
+
 					// Asking player to repeat input if intended turn is not possible
 					if (!turnPossible) {
 						System.out
-								.println("Ihre Auswahlskombination ist leider nicht möglich. Bitte wählen Sie erneut.");
+								.println("Ihre Auswahlskombination ist leider nicht möglich. Bitte wählen Sie ihre Richtung erneut.");
 						System.out.println("Aktuelle Minionreihe: " + minionQueue);
 					}
 
@@ -151,11 +161,12 @@ public class Main {
 				while (!turnPossible) {
 					numOfChosenMinions = getRandomNumber(1, MAX_SELECTED_MINIONS_ALLOWED);
 					selectedLeftSide = coinFlip();
-					// Checking if it's possible to select the chosen number of minions on the chosen side
+					// Checking if it's possible to select the chosen number of minions on the
+					// chosen side
 					turnPossible = checkIfTurnPossible(minionsLeftOfNorbert, minionsRightOfNorbert, numOfChosenMinions,
 							selectedLeftSide);
 				}
-				
+
 				if (selectedLeftSide) {
 					minionsLeftOfNorbert -= numOfChosenMinions;
 					numChosenLeft += numOfChosenMinions;
@@ -163,7 +174,7 @@ public class Main {
 					minionsRightOfNorbert -= numOfChosenMinions;
 					numChosenRight += numOfChosenMinions;
 				}
-				
+
 				teamPC = addSelectedMinionsToTeam(teamPC, numOfChosenMinions);
 
 				// Adjusting the queue of minions based on the minions that were chosen
@@ -175,7 +186,7 @@ public class Main {
 				} else {
 					System.out.println("PC hat " + numOfChosenMinions + " Minion(s) rechts ausgewählt. ");
 				}
-				
+
 				// Finishing turn
 				playersTurn = !playersTurn;
 
@@ -184,7 +195,7 @@ public class Main {
 					emptyMinionQueue = true;
 					minionQueue = createEmptyMinionQueue(MAX_MINION_QUEUE);
 					System.out.println("Alle Minions wurden gewählt: " + minionQueue);
-					System.out.println("- - - - - - - - - - - - - - -");
+					System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - -");
 					System.out.println("Sie haben Norbert und " + teamPlayer
 							+ " Minions im Team. Versuchen Sie mit Ihm die Welt zu retten!");
 
@@ -261,7 +272,7 @@ public class Main {
 		return minionsLeftOfNorbert;
 	}
 
-	// Method to determine number of minions left of Norbert
+	// Method to determine number of minions right of Norbert
 	public static int determineMinionsRightOfNorbert(int norbertsPosition, int maxMinionQueue) {
 		int minionsLeftOfNorbert;
 		int minionsRightOfNorbert;
@@ -314,7 +325,7 @@ public class Main {
 		}
 	}
 
-	// Method to randomly determine Norbert's position in the queue 
+	// Method to randomly determine Norbert's position in the queue
 	public static int determineNorbertsPosition(int maxQueueLength) {
 		return getRandomNumber(1, maxQueueLength);
 	}
@@ -333,4 +344,15 @@ public class Main {
 		return queue;
 	}
 
+	// Welcoming the player in the beginning of the game
+	public static void welcomingPlayer() {
+		System.out.println(
+				"Willkommen bei -Mission without Norbert-. Norbert ist ein anstrengeder kleiner Minion, der gerne die Pläne anderer durchkreuzt.");
+		System.out.println(
+				"Ihre Aufgabe ist es aus einer Schar von Minions Ihr Team zusammenzustellen. Doch passen Sie auf, unter Ihnen befindet sich auch ");
+		System.out.println(
+				"Norbert und Ihn möchten Sie auf keinen Fall im Team haben! Wählen Sie also weise. Sie treten gegen ihren Rivalen PC an.");
+		System.out.println("Möge das Spiel beginnen!");
+		System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - -");
+	}
 }
