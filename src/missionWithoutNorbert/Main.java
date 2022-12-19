@@ -91,6 +91,7 @@ public class Main {
 					}
 
 					System.out.println("Wieviele Minions möchten Sie wählen? Wählen Sie zwischen 1 und 3 Minions.");
+					System.out.println("Wieviele Minions möchten Sie wählen? Wählen Sie zwischen 12312312135423534 Minions.");
 
 					// Checking if input is correct
 					inputCorrect = false;
